@@ -9,7 +9,6 @@ def makepairs(wordlist):
     return lst
 
 infile = open(input("corpusTest.txt"), "r")
-# infile = open("pirates.txt", "r")
 
 # use a dictionary of dictionaries to store our corpus data
 corpus = {}

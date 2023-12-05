@@ -7,6 +7,7 @@ int main()
     markovMat *chain = new markovMat("corpus.txt");
 
     /* GENERATE STRING */
+    cout << "\nGENERATING TEXT BASED ON CORPUS (corpus.txt):\n\n";
     cout << chain->generate(100) << "\n";
 
     /* DEALLOCATE CHAIN */

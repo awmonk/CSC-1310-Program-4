@@ -72,7 +72,7 @@ markovMat::markovMat(const char *filename)
                 splitter.str(word);
                 splitter >> word >> weight;
 
-                /* add weight into the matrix, with the first index as the starting
+                /* Add weight into the matrix, with the first index as the starting
                    node and the second index at the destination node */
                 corpus.adjacency[i][corpus.buckets[word]] = weight;
             }
@@ -90,10 +90,10 @@ markovMat::~markovMat()
 
 string markovMat::generate(int length)
 {
-    // initialize an iterator to find a random node in the next line
+    /* Initialize an iterator to find a random node in the next line */
     map<string, int>::iterator it = corpus.buckets.begin();
 
-    // this grabs a random node from your corpus as a starting point
+    /* This grabs a random node from your corpus as a starting point */
     advance(it, rand() % corpusSize);
 
     /* Initialize return string and matrix indices */
