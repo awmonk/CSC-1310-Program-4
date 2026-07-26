@@ -14,7 +14,7 @@ private:
     struct matrix
     {
         map<string, int> buckets;
-        float **adjacency;
+        float **adjacency = nullptr;
     };
 
     matrix corpus;
@@ -29,6 +29,7 @@ public:
 
 markovMat::markovMat(const char *filename)
 {
+    corpusSize = 0;
     ifstream file(filename);
     stringstream *parser;
     stringstream splitter;
@@ -47,6 +48,7 @@ markovMat::markovMat(const char *filename)
         file.ignore(1, '\n');
 
         parser = new stringstream[corpusSize];
+        corpus.adjacency = new float *[corpusSize];
 
         /* Initialize an adjacency matrix */
         for (int i = 0; i < corpusSize; i++)
@@ -57,10 +59,11 @@ markovMat::markovMat(const char *filename)
                 corpus.adjacency[i][j] = 0;
         }
 
-        while (getline(file, line, '\n'))
+        while (i < corpusSize && getline(file, line, '\n'))
         {
             parser[i] << line;
             getline(parser[i], word, ',');
+            corpus.buckets[word] = i;
             i++;
         }
 
@@ -74,9 +77,14 @@ markovMat::markovMat(const char *filename)
 
                 /* Add weight into the matrix, with the first index as the starting
                    node and the second index at the destination node */
-                corpus.adjacency[i][corpus.buckets[word]] = weight;
+                map<string, int>::iterator destination = corpus.buckets.find(word);
+
+                if (destination != corpus.buckets.end())
+                    corpus.adjacency[i][destination->second] = weight;
             }
         }
+
+        delete[] parser;
     }
 }
 
@@ -90,6 +98,9 @@ markovMat::~markovMat()
 
 string markovMat::generate(int length)
 {
+    if (corpusSize == 0 || corpus.buckets.empty() || length <= 0)
+        return "";
+
     /* Initialize an iterator to find a random node in the next line */
     map<string, int>::iterator it = corpus.buckets.begin();
 
@@ -107,6 +118,7 @@ string markovMat::generate(int length)
 
     for (int i = 0; i < length - 1; i++)
     {
+        index = -1;
         randV = (float)rand() / RAND_MAX;
         weight = 0;
 
